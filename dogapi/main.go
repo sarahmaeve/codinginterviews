@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -29,14 +30,14 @@ func getBreedList() *ApiMessage {
 		fmt.Println("GAAAH", err)
 		os.Exit(1)
 	}
-	//	fmt.Println(m.Breeds["spaniel"])
+
 	return &m
 }
 
 func checkBreedList(m *ApiMessage, breed string) bool {
 	breed = strings.ToLower(breed)
 	for k, v := range m.Breeds {
-		if breed == k {
+		if breed == k || strings.Replace(breed, " ", "", -1) == k {
 			return true
 		} else {
 			for _, sub := range v {
@@ -49,13 +50,36 @@ func checkBreedList(m *ApiMessage, breed string) bool {
 	return false
 }
 
-func main() {
-	m := getBreedList()
-	myBreed := "herp derp"
-	if checkBreedList(m, myBreed) == true {
-		fmt.Println(myBreed, "is a dog breed.")
-	} else {
-		fmt.Println(myBreed, "is not a dog breed.")
+type BreedCount struct {
+	Breed string
+	Value int
+}
+
+func topSubbreeds(m *ApiMessage, count int) []BreedCount {
+	// given the list of breeds, return a string with the breeds with
+	// the most subbreeds, ordered by number
+	// breed1 : 5, breed2: 3, breed3: 3 ....
+
+	if count < 0 {
+		count = 1
 	}
 
+	var ss []BreedCount
+	// does this make sense to avoid a lot of copies during the append()?
+	// (in general, as this is a small frequency set)
+	ss = make([]BreedCount, 0, len(m.Breeds))
+	for k, v := range m.Breeds {
+		ss = append(ss, BreedCount{k, len(v)})
+	}
+
+	sort.SliceStable(ss, func(i, j int) bool {
+		return ss[i].Value > ss[j].Value
+	})
+
+	return ss[:count]
+}
+
+func main() {
+	m := getBreedList()
+	fmt.Println(topSubbreeds(m, 5))
 }
