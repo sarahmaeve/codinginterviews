@@ -1,2 +1,3 @@
-# codinginterviews
-Go programming solutions for problems in "Cracking the Coding Interview" and problems seen during job searches
+# Challenges
+
+Various coding challenges and items from "Cracking the Coding Interview" as desired.
