@@ -3,7 +3,6 @@
 // return a score
 // version 2: add a time limit; when at limit return score and exit
 // TODO: randomize question order
-// TODO: is there any need for wait groups??
 
 package main
 
@@ -56,14 +55,13 @@ func timer(s int, c chan int) {
 	time.Sleep(time.Duration(s) * time.Second)
 	fmt.Println("\nTime's up!")
 	c <- 0
+	return
 }
 
 func quiz(qlist [][]string, questions int, c chan int) {
 	var counter int
 	for _, line := range qlist {
 		if questions > 0 && counter >= questions {
-			// don't just break -- end channel and produce score
-			c <- 0
 			break
 		} else {
 
@@ -78,4 +76,5 @@ func quiz(qlist [][]string, questions int, c chan int) {
 		}
 	}
 	c <- 0
+	return
 }
