@@ -2,7 +2,6 @@
 // Gophercises #1: create a quiz that reads a csv file and asks the user questions
 // return a score
 // version 2: add a time limit; when at limit return score and exit
-// TODO: randomize question order
 
 package main
 
@@ -11,6 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -58,8 +58,17 @@ func timer(s int, c chan int) {
 	return
 }
 
+func shuffle(qlist [][]string) {
+	rand.Seed(time.Now().UTC().UnixNano())
+	for i := range qlist {
+		swap := rand.Intn(len(qlist) - 1)
+		qlist[i], qlist[swap] = qlist[swap], qlist[i]
+	}
+}
+
 func quiz(qlist [][]string, questions int, c chan int) {
 	var counter int
+	shuffle(qlist)
 	for _, line := range qlist {
 		if questions > 0 && counter >= questions {
 			break
