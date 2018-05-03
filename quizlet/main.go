@@ -16,7 +16,13 @@ import (
 	"time"
 )
 
-var score int
+var score, seconds, questions int
+
+func init() {
+	flag.IntVar(&seconds, "timer", 30, "time for quiz in seconds")
+	flag.IntVar(&questions, "questions", -1, "number of questions")
+	flag.Parse()
+}
 
 func main() {
 	quizfile := "quiz1.csv"
@@ -25,36 +31,30 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pSeconds := flag.Int("timer", 30, "time for quiz in seconds")
-	pQuestions := flag.Int("questions", -1, "number of questions")
-	flag.Parse()
-
 	// do ReadAll() instead of step by step read so we can report # of questions
 	qlist, _ := csv.NewReader(f).ReadAll()
 	var target int
 	target = len(qlist)
-	if *pQuestions > 0 && *pQuestions < target {
-		target = *pQuestions
+	if questions > 0 && questions < target {
+		target = questions
 	}
 	defer f.Close()
 	c := make(chan int)
-	go quiz(qlist, *pQuestions, c)
-	go timer(*pSeconds, c)
+	go quiz(qlist, questions, c)
+	go timer(seconds, c)
 	// add when receiving
 	for i := range c {
 		if i > 0 {
 			score += i
-		} else {
-			fmt.Printf("\nYou answered %v questions correctly out of %v.\n", score, target)
-			break
 		}
 	}
+	fmt.Printf("\nYou answered %v questions correctly out of %v.\n", score, target)
 }
 
 func timer(s int, c chan int) {
 	time.Sleep(time.Duration(s) * time.Second)
 	fmt.Println("\nTime's up!")
-	c <- 0
+	close(c)
 	return
 }
 
@@ -84,6 +84,6 @@ func quiz(qlist [][]string, questions int, c chan int) {
 			}
 		}
 	}
-	c <- 0
+	close(c)
 	return
 }
