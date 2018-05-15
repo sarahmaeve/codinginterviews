@@ -13,7 +13,7 @@ func TestTransliterate(t *testing.T) {
 	for arabizi, arabic := range wordlist {
 		transl := transliterateString(arabizi)
 		if transl != arabic {
-			t.Errorf("Expected %v for %v, but received %v", arabic, arabizi, transl)
+			t.Errorf("Expected %s for %s, but received %s", arabic, arabizi, transl)
 		}
 	}
 	return
