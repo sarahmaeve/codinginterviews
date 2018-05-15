@@ -12,7 +12,6 @@ import (
 	"flag"
 	"fmt"
 	"math/big"
-	// "math/rand"
 	"os"
 	"strings"
 )
@@ -21,6 +20,7 @@ const alphabetEnglish string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv
 
 // next step = multiple charset support
 const cyrillic string = "АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
+const arabic string = "غظضذخثتشرقصفعسنملكيطحزوهدجا" // very short without upper / lower
 const numbers string = "0123456789"
 const symbols string = `~!@#$%^&*()_+={}[]|:";<>,.?\'\`
 
@@ -77,12 +77,13 @@ func main() {
 
 }
 
-// eep : first attempt at crypto/rand
 func construct(charset string, length int) string {
 	var chunk string
+	// support non english-alpha codesets
+	expand := []rune(charset)
 	for x := 0; x < length; x++ {
-		loc := getBetterRand(len(charset))
-		chunk += charset[loc : loc+1]
+		loc := getBetterRand(len(expand))
+		chunk += string(expand[loc])
 	}
 	return chunk
 }
