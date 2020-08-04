@@ -1,0 +1,5 @@
+"particle",1,2.4
+"random",-6,3.08
+"avernus",9,-5.1
+"scintilla",0,12.5
+"hammurabi",8,4.0
