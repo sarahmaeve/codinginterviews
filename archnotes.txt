@@ -1,0 +1,78 @@
+# design a high velocity logging and collection system
+
+# what are we storing?
+## events
+## time series data?
+## context : distributed tracing
+## application
+## system info: mem usage, process
+
+# scale
+## how much, how fast
+
+# how long?
+
+# can I sample
+
+# GUESS: format: individual entries are somewhat small
+# app log, http log, event log from stateless website
+# GUESS: high velocity
+# GUESS: sampling ok (client side) (5%)
+
+### NOTA BENE: limit on the growth of logging system
+## y-o-y growth limit
+
+# Consumer?
+## Machines?
+## 1) Human debugging purposes
+### -> human readable output -> API / interface happy graphs, charts
+## 2) Query for alerting
+### -> the responsiveness needs to be known
+### rules engine??
+### "condition X exists for 5m" [ needs results 1m ]
+
+# QUEUE ( receive events ) ( possibly also throttle )
+# multiple endpoints to receive [ AZ basis / geographically / datacenter ]
+# transport of events --> ok to drop some??? OR?
+## verify delivery later
+
+# Requirement: 1 year logs -- storage
+## Queue mechanism (pub / sub) -> go to another data storage location (possible: no sampling)
+### remove this from the earlier requirement of relevant speed
+
+# Payments?
+# PPI / safeguards
+
+# Ingestion filter / alert
+### SSN - like ; customer information debug? ; approved / testing list
+### Joe Schmoe PAYMENT 9034879023849
+### pseudoanon data "JOE" > #0984098594 (cannot be reversed)
+## actual reviews of logging code
+### variances are bugs : example : 10% more log space
+
+# throttle / stagger delivery times
+
+### GDPR / right to forget
+# how are we deleting records from system?
+# truncate logs or expire them after a year
+# do I need a transaction record? reverse?
+
+# add identifiers: machineid, system, location, threshold, timestamp, checksum, application / context information (for microservices)
+### bundled by the publish agent through config on an app / usage basis
+
+### collect general metrics: CPU usage, # of transactions?
+### can I alter code?
+## individual API connections( app, mesg)
+### ?? am I doing log rotation / box?
+## SCRAPER? pull -> REST
+## scraping and publishing local logs [ configured ]
+## slow queries / overload
+### how many agents ? what is the overhead
+## $$$
+
+
+
+
+
+
+
